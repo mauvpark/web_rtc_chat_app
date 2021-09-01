@@ -14,4 +14,4 @@ This repository is for studying webRTC app.
 - server: `nodemon index.js`
 
 ## *4. Flow*
-- Explaination is in client/SocketContext.js, server/index.js
+- Explaination is in `client/SocketContext.js`, `server/index.js`.
