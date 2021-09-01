@@ -12,3 +12,6 @@ This repository is for studying webRTC app.
 ## *3. How to use*
 - client: `npm start`
 - server: `nodemon index.js`
+
+## *4. Flow*
+- Explaination is in client/SocketContext.js, server/index.js
