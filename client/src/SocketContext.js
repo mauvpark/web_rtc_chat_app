@@ -14,9 +14,9 @@ const ContextProvider = ({ children }) => {
 	const [callEnded, setCallEnded] = useState(false);
 	const [name, setName] = useState("");
 
-	const myVideo = useRef();
-	const userVideo = useRef();
-	const connectionRef = useRef();
+	let myVideo = useRef();
+	let userVideo = useRef();
+	let connectionRef = useRef();
 
 	useEffect(() => {
 		navigator.mediaDevices
@@ -29,7 +29,7 @@ const ContextProvider = ({ children }) => {
 
 		socket.on("me", (id) => setMe(id));
 		socket.on("calluser", ({ from, name: callerName, signal }) => {
-			setCall({ isReceiveCall: true, from, name: callerName, signal });
+			setCall({ isReceivedCall: true, from, name: callerName, signal });
 		});
 	}, []);
 
@@ -104,3 +104,5 @@ const ContextProvider = ({ children }) => {
 		</SocketContext.Provider>
 	);
 };
+
+export { ContextProvider, SocketContext };
