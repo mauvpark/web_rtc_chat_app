@@ -14,9 +14,9 @@ const ContextProvider = ({ children }) => {
 	const [callEnded, setCallEnded] = useState(false);
 	const [name, setName] = useState("");
 
-	let myVideo = useRef();
-	let userVideo = useRef();
-	let connectionRef = useRef();
+	const myVideo = useRef();
+	const userVideo = useRef();
+	const connectionRef = useRef();
 
 	useEffect(() => {
 		navigator.mediaDevices
@@ -28,6 +28,7 @@ const ContextProvider = ({ children }) => {
 			});
 
 		socket.on("me", (id) => setMe(id));
+		// ? 3. Get information from a person who called, then update call.
 		socket.on("calluser", ({ from, name: callerName, signal }) => {
 			setCall({ isReceivedCall: true, from, name: callerName, signal });
 		});
@@ -39,13 +40,16 @@ const ContextProvider = ({ children }) => {
 		const peer = new Peer({ initiator: false, trickle: false, stream });
 
 		peer.on("signal", (data) => {
+			// ? 4. Accept call and send approved signal to the person who called.
 			socket.emit("answercall", { signal: data, to: call.from });
 		});
 
 		peer.on("stream", (currentStream) => {
+			// ? 4. Get the person's video who called.
 			userVideo.current.srcObject = currentStream;
 		});
 
+		// ? 4. Get connected.
 		peer.signal(call.signal);
 
 		connectionRef.current = peer;
@@ -55,6 +59,7 @@ const ContextProvider = ({ children }) => {
 		const peer = new Peer({ initiator: true, trickle: false, stream });
 
 		peer.on("signal", (data) => {
+			// ? 1. Emitting information(target id, signal, my name, my id);
 			socket.emit("calluser", {
 				userToCall: id,
 				signalData: data,
@@ -64,12 +69,15 @@ const ContextProvider = ({ children }) => {
 		});
 
 		peer.on("stream", (currentStream) => {
+			// ? 6. If signal is approved can get connected.
 			userVideo.current.srcObject = currentStream;
 		});
 
+		// ? 6. The person who called gets the information "approved".
 		socket.on("callaccepted", (signal) => {
 			setCallAccepted(true);
 
+			// ? 6. Get connected.
 			peer.signal(signal);
 		});
 
